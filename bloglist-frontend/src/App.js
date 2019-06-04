@@ -15,9 +15,14 @@ const App = () => {
   
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    try {
+      blogService.getAll().then(blogs =>
+        setBlogs( blogs )
+      )  
+    } catch (exception) {
+      console.log('exception ', exception)
+    }
+    
   }, [])
 
   useEffect(() => {
@@ -108,7 +113,7 @@ const App = () => {
         <h2>Blogs</h2>
         <p>{user.name} logged in</p>
         <button onClick={logoutUser}>Log out</button>
-        <CreateForm />
+        <CreateForm blogs={blogs} setBlogs={setBlogs}/> 
         {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}

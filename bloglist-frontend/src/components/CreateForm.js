@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import Notification from './Notification'
 
-const CreateForm = () => {
+const CreateForm = ({ blogs, setBlogs }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -11,22 +11,25 @@ const CreateForm = () => {
   const [type, setType] = useState(null)
 
 
-  const createNewBlog = async () => {
 
-    try {
-      const createdBlog = {title, author, url}
+  const createNewBlog = async (event) => {
+      event.preventDefault()
+      const createdBlog = {title, author, url}          
+      try {
+        const response = await blogService.create(createdBlog)  
+        setBlogs(blogs.concat(response))
+        setMessage(`a new blog ${title} by ${author}`)   
+        setType("success")        
+        setTimeout(() => {
+          setMessage(null)
+          setType(null)
+        }, 3000) 
+      } catch (exception) {
+        console.log('Exception ', exception)
+      }
       setAuthor('')
       setTitle('')
-      setUrl('')
-      await blogService.create(createdBlog)
-    } catch (exception) {
-      setMessage('could not create blog')
-      setType("error")
-      setTimeout(() => {
-        setMessage(null)
-        setType(null)
-      }, 3000)
-    }
+      setUrl('')   
   }
 
     return (
@@ -52,7 +55,7 @@ const CreateForm = () => {
             value={url}
             name="url"
             onChange={({ target }) => setUrl(target.value)} />   <br/>    
-          <button type="submit">Lisää</button>   
+          <input type="submit" value="Lisää" />   
         </form>
       </div>
     )

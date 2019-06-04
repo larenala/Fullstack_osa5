@@ -11,7 +11,7 @@ const setToken = newToken => {
 const getAll = () => {
   try {
     const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+    return request.then(response => response.data)
   } catch (exception) {
     console.log('exception ', exception)
   }
@@ -22,7 +22,6 @@ const create = async newObject => {
   const config = {
     headers: { Authorization: token },
   }
-
   const response = await axios.post(baseUrl, newObject, config)
   return response.data
 }
