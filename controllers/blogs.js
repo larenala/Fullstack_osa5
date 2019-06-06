@@ -25,7 +25,7 @@ router.post('/', async (request, response) => {
     
   const user = await User.findById(decodedToken.id)
 
-  blog.user = user.id
+  blog.user = user
 
   if (!blog.url || !blog.title ) {
     return response.status(400).send({ error: 'title or url missing'}).end()
@@ -36,23 +36,29 @@ router.post('/', async (request, response) => {
   }
 
   const result = await blog.save()
-  user.blogs = user.blogs.concat(blog)
+  user.blogs = user.blogs.concat(result)
   await user.save()
-
   response.status(201).json(result)
 })
 
 router.put('/:id', async (request, response) => {
-  const { author, title, url,likes } = request.body
-
-  const blog = {
-    author, title, url, likes,
+  const id = request.body.user.id
+  const user = await User.findById(id)
+  try {
+    const { id, author, title, url, likes } = request.body
+  
+    const blog = {
+      id, author, title, url, likes
+    }
+    blog.user = user
+    const updatedBlog = await Blog
+      .findByIdAndUpdate(request.params.id, blog, { new: true })
+    updatedBlog.user = user
+    response.json(updatedBlog.toJSON())
+  } catch (error) {
+    next(error)
   }
-
-  const updatedNote = await Blog
-    .findByIdAndUpdate(request.params.id, blog, { new: true })
-      
-  response.json(updatedNote.toJSON())
+  
 })
 
 router.delete('/:id', async (request, response) => {

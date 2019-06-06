@@ -4,6 +4,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import CreateForm from './components/CreateForm'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -12,7 +14,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [type, setType] = useState(null)
-  
+  const blogFormRef = React.createRef()
 
   useEffect(() => {
     try {
@@ -64,7 +66,24 @@ const App = () => {
     }
   }
 
-  const loginForm = () => (
+  const loginForm = () => {
+    return (
+      <div>
+        <Togglable buttonLabel="login">
+          <LoginForm
+              username={username}
+              password={password}
+              handleUsernameChange={({ target }) => setUsername(target.value)}
+              handlePasswordChange={({ target }) => setPassword(target.value)}
+              handleSubmit={handleLogin}
+            />
+        </Togglable>
+      </div>
+    )
+  }
+
+
+  /*const loginForm = () => (
     <div>
       <h2>Kirjaudu</h2>
       <form onSubmit={handleLogin}>
@@ -88,9 +107,9 @@ const App = () => {
         </div>
         <button type="submit">kirjaudu</button>
         
-      </form>   
+      </form>  
     </div>   
-  )
+  )*/
 
   const logoutUser = () => {
     window.localStorage.removeItem('loggedBlogappUser')
@@ -113,9 +132,15 @@ const App = () => {
         <h2>Blogs</h2>
         <p>{user.name} logged in</p>
         <button onClick={logoutUser}>Log out</button>
-        <CreateForm blogs={blogs} setBlogs={setBlogs}/> 
-        {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Togglable buttonLabel="lisää uusi blogi" ref={blogFormRef}>
+          <CreateForm blogs={blogs} setBlogs={setBlogs} blogFormRef={blogFormRef} user={user}/> 
+        </Togglable>        
+        <div>
+
+</div>
+        
+        {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
+        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={user} />
       )}
       </div>
     }
