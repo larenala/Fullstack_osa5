@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
 const Blog = ({ blog, blogs, setBlogs, user }) => {
@@ -9,7 +9,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  const [showInfo, setShowInfo ] = useState(false)
+  const [ showInfo, setShowInfo ] = useState(false)
 
   const showBlogDetails = () => {
     return (
@@ -17,21 +17,21 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
     )
   }
 
-  const handleLike =  (id) => {
+  const handleLike =  () => {
     return async () => {
       const changedBlog = {
-        ...blog, 
+        ...blog,
         likes: blog.likes+1,
         user: blog.user,
       }
       try {
-        const response = await blogService.update(blog.id, changedBlog)       
+        const response = await blogService.update(blog.id, changedBlog)
         setBlogs(blogs.map(b => b.id !== blog.id ? b : response))
-        setShowInfo(true)     
+        setShowInfo(true)
       } catch (exception) {
         console.log('exception ', exception)
       }
-    }    
+    }
   }
 
   const removeBlog = (id) => {
@@ -45,7 +45,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
       } catch (exception) {
         console.log('exception ', exception)
       }
-      
+
     }
   }
 
@@ -53,26 +53,24 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
   return (
     <div>
       <div style={blogStyle}>
-      {showInfo ? 
-      <div onClick={showBlogDetails}>
-        {blog.title} {blog.author}
-        <br/>
-        <a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a><br/>
-        <p>{blog.likes} likes <button onClick={handleLike(blog.id)}>like</button></p>
-        <p>added by {blog.user.username}</p>
-        {blog.user.username === user.username ?        
-        <button onClick={removeBlog(blog.id)}>remove</button>
-        : 
-        <></>}
-      </div> 
-      : 
-      <div onClick={showBlogDetails}>
-        {blog.title} {blog.author}
-      </div>}
-      
+        {showInfo ?
+          <div onClick={showBlogDetails}>
+            {blog.title} {blog.author}
+            <br/>
+            <a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a><br/>
+            <p>{blog.likes} likes <button onClick={handleLike(blog.id)}>like</button></p>
+            <p>added by {blog.user.username}</p>
+            {blog.user.username === user.username ?
+              <button onClick={removeBlog(blog.id)}>remove</button>
+              :
+            <></>}
+          </div>
+          :
+          <div onClick={showBlogDetails}>
+            {blog.title} {blog.author}
+          </div>}
+      </div>
     </div>
-    </div>
-    
-)}
+  )}
 
 export default Blog

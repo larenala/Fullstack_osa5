@@ -15,7 +15,6 @@ const getAll = () => {
   } catch (exception) {
     console.log('exception ', exception)
   }
-  
 }
 
 const create = async newObject => {

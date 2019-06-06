@@ -9,8 +9,8 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [type, setType] = useState(null)
@@ -20,11 +20,11 @@ const App = () => {
     try {
       blogService.getAll().then(blogs =>
         setBlogs( blogs )
-      )  
+      )
     } catch (exception) {
       console.log('exception ', exception)
     }
-    
+
   }, [])
 
   useEffect(() => {
@@ -45,20 +45,20 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
       setMessage('kirjautunut sisään')
-      setType("success")
+      setType('success')
       setTimeout(() => {
         setMessage(null)
         setType(null)
       }, 3000)
     } catch (exception) {
       setMessage('käyttäjätunnus tai salasana virheellinen')
-      setType("error")
+      setType('error')
       setTimeout(() => {
         setMessage(null)
         setType(null)
@@ -69,14 +69,14 @@ const App = () => {
   const loginForm = () => {
     return (
       <div>
-        <Togglable buttonLabel="login">
+        <Togglable buttonLabel='login'>
           <LoginForm
-              username={username}
-              password={password}
-              handleUsernameChange={({ target }) => setUsername(target.value)}
-              handlePasswordChange={({ target }) => setPassword(target.value)}
-              handleSubmit={handleLogin}
-            />
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
         </Togglable>
       </div>
     )
@@ -106,48 +106,42 @@ const App = () => {
           />
         </div>
         <button type="submit">kirjaudu</button>
-        
-      </form>  
-    </div>   
+
+      </form>
+    </div>
   )*/
 
   const logoutUser = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
     setMessage('kirjautunut ulos')
-      setType("success")
-      setTimeout(() => {
-        setMessage(null)
-        setType(null)
-      }, 3000)
+    setType('success')
+    setTimeout(() => {
+      setMessage(null)
+      setType(null)
+    }, 3000)
   }
 
   return (
     <div>
       <Notification message={message} type={type} />
-      
-      { user === null ?
-      loginForm() :
-      <div>       
-        <h2>Blogs</h2>
-        <p>{user.name} logged in</p>
-        <button onClick={logoutUser}>Log out</button>
-        <Togglable buttonLabel="lisää uusi blogi" ref={blogFormRef}>
-          <CreateForm blogs={blogs} setBlogs={setBlogs} blogFormRef={blogFormRef} user={user}/> 
-        </Togglable>        
-        <div>
-
-</div>
-        
-        {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={user} />
-      )}
+      <div>
+        { user === null ?
+          loginForm() :
+          <div>
+            <h2>Blogs</h2>
+            <p>{user.name} logged in</p>
+            <button onClick={logoutUser}>Log out</button>
+            <Togglable buttonLabel="lisää uusi blogi" ref={blogFormRef}>
+              <CreateForm blogs={blogs} setBlogs={setBlogs} blogFormRef={blogFormRef} user={user}/>
+            </Togglable>
+            {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
+              <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={user} />
+            )}
+          </div>
+        }
       </div>
-    }
     </div>
-      
-      
-    
   )
 }
 
