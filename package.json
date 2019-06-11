@@ -11,7 +11,7 @@
   "author": "\"Laura Reivinen\"",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^23.6.0",
+    "@testing-library/react": "^8.0.1",
     "nodemon": "^1.19.1",
     "supertest": "^3.4.1"
   },
