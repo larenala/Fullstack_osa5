@@ -34,7 +34,7 @@ test('renders author', () => {
   )
 })
 
-test('renders author', () => {
+test('renders likes', () => {
   const blog = {
     title: 'Blog title',
     author: 'Blog author',

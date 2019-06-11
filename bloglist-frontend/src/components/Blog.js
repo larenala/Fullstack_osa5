@@ -54,11 +54,11 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
     <div>
       <div style={blogStyle}>
         {showInfo ?
-          <div onClick={showBlogDetails}>
+          <div className='showDetails' onClick={showBlogDetails}>
             {blog.title} {blog.author}
             <br/>
             <a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a><br/>
-            <p>{blog.likes} likes <button onClick={handleLike(blog.id)}>like</button></p>
+            <div className='likes'>{blog.likes} likes <button onClick={handleLike(blog.id)}>like</button></div>
             <p>added by {blog.user.username}</p>
             {blog.user.username === user.username ?
               <button onClick={removeBlog(blog.id)}>remove</button>
@@ -66,7 +66,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
             <></>}
           </div>
           :
-          <div onClick={showBlogDetails}>
+          <div className='showList' onClick={showBlogDetails}>
             {blog.title} {blog.author}
           </div>}
       </div>
