@@ -29,6 +29,7 @@ const App = () => {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    console.log('USER ', loggedUserJSON)
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -68,7 +69,7 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <div>
+      <div className='login'>
         <Togglable buttonLabel='login'>
           <LoginForm
             username={username}
@@ -128,7 +129,7 @@ const App = () => {
       <div>
         { user === null ?
           loginForm() :
-          <div>
+          <div className='blogs'>
             <h2>Blogs</h2>
             <p>{user.name} logged in</p>
             <button onClick={logoutUser}>Log out</button>
@@ -136,7 +137,7 @@ const App = () => {
               <CreateForm blogs={blogs} setBlogs={setBlogs} blogFormRef={blogFormRef} user={user}/>
             </Togglable>
             {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-              <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={user} />
+              <Blog className='blog' key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={user} />
             )}
           </div>
         }
