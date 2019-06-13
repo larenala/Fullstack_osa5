@@ -3,11 +3,12 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import Notification from './Notification'
 import PropTypes from 'prop-types'
+import { useField } from '../hooks/index'
 
 const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const addedTitle = useField('text')
+  const addedAuthor = useField('text')
+  const addedUrl = useField('text')
   const [message, setMessage] = useState(null)
   const [type, setType] = useState(null)
 
@@ -15,11 +16,14 @@ const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
   const createNewBlog = async (event) => {
     event.preventDefault()
     blogFormRef.current.toggleVisibility()
+    let title = addedTitle.fields.value
+    let author = addedAuthor.fields.value
+    let url = addedUrl.fields.value
     const createdBlog = { title, author, url, user }
     try {
       const response = await blogService.create(createdBlog)
       setBlogs(blogs.concat(response))
-      setMessage(`a new blog ${title} by ${author}`)
+      setMessage(`a new blog ${addedTitle} by ${addedAuthor}`)
       setType('success')
       setTimeout(() => {
         setMessage(null)
@@ -28,9 +32,9 @@ const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
     } catch (exception) {
       console.log('Exception ', exception)
     }
-    setAuthor('')
-    setTitle('')
-    setUrl('')
+    addedAuthor.resetfield.reset()
+    addedTitle.resetfield.reset()
+    addedUrl.resetfield.reset()
   }
 
   return (
@@ -39,23 +43,11 @@ const CreateForm = ({ blogs, setBlogs, blogFormRef, user }) => {
       <h2>Lisää uusi blogi</h2>
       <form onSubmit={createNewBlog}>
         <label>nimi</label>
-        <input
-          type='text'
-          value={title}
-          name='title'
-          onChange={({ target }) => setTitle(target.value)} />  <br/>
+        <input { ...addedTitle.fields } />  <br/>
         <label>tekijä</label>
-        <input
-          type='text'
-          value={author}
-          name='author'
-          onChange={({ target }) => setAuthor(target.value)} />  <br/>
+        <input { ...addedAuthor.fields } />  <br/>
         <label>url</label>
-        <input
-          type='text'
-          value={url}
-          name='url'
-          onChange={({ target }) => setUrl(target.value)} />   <br/>
+        <input { ...addedUrl.fields } />   <br/>
         <input type='submit' value='Lisää' />
       </form>
     </div>

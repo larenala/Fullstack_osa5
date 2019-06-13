@@ -6,11 +6,12 @@ import Notification from './components/Notification'
 import CreateForm from './components/CreateForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import { useField } from './hooks/index.js'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  let username = useField('text')
+  let password = useField('password')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [type, setType] = useState(null)
@@ -29,7 +30,6 @@ const App = () => {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    console.log('USER ', loggedUserJSON)
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -39,18 +39,19 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log('logging in with', username, password)
+    const uname=username.fields.value
+    const pword = password.fields.value
     try {
       const user = await loginService.login({
-        username, password,
+        uname, pword,
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.resetfield.reset()
+      password.resetfield.reset()
       setMessage('kirjautunut sisään')
       setType('success')
       setTimeout(() => {
@@ -60,6 +61,8 @@ const App = () => {
     } catch (exception) {
       setMessage('käyttäjätunnus tai salasana virheellinen')
       setType('error')
+      username.resetfield.reset()
+      password.resetfield.reset()
       setTimeout(() => {
         setMessage(null)
         setType(null)
@@ -72,10 +75,8 @@ const App = () => {
       <div className='login'>
         <Togglable buttonLabel='login'>
           <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
+            username={username.fields}
+            password={password.fields}
             handleSubmit={handleLogin}
           />
         </Togglable>
@@ -125,7 +126,9 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={message} type={type} />
+      <div className='notification'>
+        <Notification message={message} type={type} />
+      </div>
       <div>
         { user === null ?
           loginForm() :

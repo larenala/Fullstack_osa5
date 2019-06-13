@@ -1,3 +1,6 @@
+.notification {
+    min-height: 2em;
+}
 
 .success {
     font-size: 1.2em;
